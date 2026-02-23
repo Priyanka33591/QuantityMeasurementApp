@@ -1,16 +1,19 @@
 package com.bridgelabz.quantity;
+
 import java.util.Objects;
 
 public class Length {
 
-    // ===== Instance variables =====
+    // ================= Instance Variables =================
     private final double value;
     private final LengthUnit unit;
 
-    // ===== Enum for supported units =====
+    // ================= Enum (Base Unit = Inches) =================
     public enum LengthUnit {
-        FEET(12.0),     // 1 foot = 12 inches
-        INCHES(1.0);    // base unit
+        FEET(12.0),            // 1 ft = 12 in
+        INCHES(1.0),           // base unit
+        YARDS(36.0),           // 1 yd = 36 in
+        CENTIMETERS(0.393701); // 1 cm = 0.393701 in
 
         private final double conversionFactor;
 
@@ -23,55 +26,43 @@ public class Length {
         }
     }
 
-    // ===== Constructor with validation =====
+    // ================= Constructor =================
     public Length(double value, LengthUnit unit) {
         if (unit == null) {
             throw new IllegalArgumentException("Unit cannot be null");
-        }
-        if (value < 0) {
-            throw new IllegalArgumentException("Length cannot be negative");
         }
         this.value = value;
         this.unit = unit;
     }
 
-    // ===== Convert to base unit (inches) =====
-    private double convertToBaseUnit() {
-        return this.value * this.unit.getConversionFactor();
+    // ================= Convert to Base Unit =================
+    private double toInches() {
+        return value * unit.getConversionFactor();
     }
 
-    // ===== Compare helper =====
+    // ================= Compare Helper =================
     public boolean compare(Length that) {
         if (that == null) return false;
-
-        double thisInches = this.convertToBaseUnit();
-        double thatInches = that.convertToBaseUnit();
-
-        // tolerance for floating point comparison
-        return Math.abs(thisInches - thatInches) < 0.0001;
+        double diff = Math.abs(this.toInches() - that.toInches());
+        return diff < 0.0001; // floating tolerance
     }
 
-    // ===== equals() override =====
+    // ================= equals Override =================
     @Override
     public boolean equals(Object o) {
-
-        // Reflexive
         if (this == o) return true;
-
-        // Null + type safety
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Length)) return false;
         Length that = (Length) o;
         return compare(that);
     }
 
-    // ===== hashCode() (must when equals overridden) =====
+    // ================= hashCode =================
     @Override
     public int hashCode() {
-        return Objects.hash(convertToBaseUnit());
+        return Objects.hash(Math.round(toInches() * 10000));
     }
 
-    // ===== Optional: getters =====
+    // ================= Getters =================
     public double getValue() {
         return value;
     }
