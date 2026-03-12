@@ -6,6 +6,8 @@ public enum LengthUnit implements IMeasurable{
 
     private final double convertToFeet;
 
+    private static final SupportsArithmetic sm = () -> true;
+
     LengthUnit(double convertToFeet){
         this.convertToFeet = convertToFeet;
     }

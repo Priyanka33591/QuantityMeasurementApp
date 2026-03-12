@@ -4,6 +4,7 @@ public enum WeightUnit implements IMeasurable{
     POUND(0.453592);
 
     private final double toKGFactor;
+    private static final SupportsArithmetic sm = () -> true;
 
     WeightUnit(double toKGFactor){
         this.toKGFactor = toKGFactor;

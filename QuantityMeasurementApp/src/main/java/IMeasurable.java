@@ -3,4 +3,10 @@ public interface IMeasurable {
     double convertToBase(double value);
     double convertFromBase(double value);
     String getUnitName();
+
+    default void validOperationSupport(String operation){
+
+    }
 }
+
+
