@@ -1,7 +1,6 @@
 public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
-
         Quantity<LengthUnit> l1 = new Quantity<>(1, LengthUnit.FEET);
         Quantity<LengthUnit> l2 = new Quantity<>(12, LengthUnit.INCH);
 
@@ -17,5 +16,17 @@ public class QuantityMeasurementApp {
         System.out.println("Add lengths: " + l1.add(l2));
 
         System.out.println("Add weights in grams: " + w1.add(w2, WeightUnit.GRAM));
+
+        Quantity<VolumeUnit> v1 = new Quantity<>(1, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(2, VolumeUnit.MILLILITRE);
+        System.out.println(v1.equals(v2));
+
+        Quantity<VolumeUnit> v3 = new Quantity<>(1, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v4 = new Quantity<>(1000, VolumeUnit.MILLILITRE);
+        System.out.println(v3.equals(v4));
+
+        System.out.println(v1.convertTo(VolumeUnit.GALLON));
+        System.out.println(v2.add(v3));
+        System.out.println(v3.add(v4, VolumeUnit.GALLON));
     }
 }

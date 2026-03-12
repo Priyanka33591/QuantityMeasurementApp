@@ -2,7 +2,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class QuantityGenericTest {
-
     @Test
     void testIMeasurableInterface_LengthUnitImplementation() {
         IMeasurable unit = LengthUnit.FEET;
@@ -131,4 +130,128 @@ public class QuantityGenericTest {
 
         assertEquals(new Quantity<>(4.0, LengthUnit.FEET), result);
     }
+
+
+    @Test
+    void testEquality_LitreToLitre_SameValue() {
+        assertTrue(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(1.0, VolumeUnit.LITRE))
+        );
+    }
+
+    @Test
+    void testEquality_LitreToLitre_DifferentValue() {
+        assertFalse(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(2.0, VolumeUnit.LITRE))
+        );
+    }
+
+    @Test
+    void testEquality_LitreToMillilitre_EquivalentValue() {
+        assertTrue(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(1000.0, VolumeUnit.MILLILITRE))
+        );
+    }
+
+    @Test
+    void testEquality_MillilitreToLitre_EquivalentValue() {
+        assertTrue(
+            new Quantity<>(1000.0, VolumeUnit.MILLILITRE)
+            .equals(new Quantity<>(1.0, VolumeUnit.LITRE))
+        );
+    }
+
+    @Test
+    void testEquality_LitreToGallon_EquivalentValue() {
+        assertTrue(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(0.264172, VolumeUnit.GALLON))
+        );
+    }
+
+    @Test
+    void testEquality_GallonToLitre_EquivalentValue() {
+        assertTrue(
+            new Quantity<>(1.0, VolumeUnit.GALLON)
+            .equals(new Quantity<>(3.78541, VolumeUnit.LITRE))
+        );
+    }
+
+    @Test
+    void testEquality_VolumeVsLength_Incompatible() {
+        assertFalse(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(1.0, LengthUnit.FEET))
+        );
+    }
+
+    @Test
+    void testEquality_VolumeVsWeight_Incompatible() {
+        assertFalse(
+            new Quantity<>(1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(1.0, WeightUnit.KILOGRAM))
+        );
+    }
+
+    @Test
+    void testEquality_NullComparison() {
+        assertFalse(
+            new Quantity<>(1.0, VolumeUnit.LITRE).equals(null)
+        );
+    }
+
+    @Test
+    void testEquality_SameReference() {
+        Quantity<VolumeUnit> q = new Quantity<>(1.0, VolumeUnit.LITRE);
+        assertTrue(q.equals(q));
+    }
+
+    @Test
+    void testEquality_NullUnit() {
+        assertThrows(IllegalArgumentException.class,
+            () -> new Quantity<>(1.0, null)
+        );
+    }
+
+    @Test
+    void testEquality_TransitiveProperty() {
+
+        Quantity<VolumeUnit> A = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> B = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+        Quantity<VolumeUnit> C = new Quantity<>(1.0, VolumeUnit.LITRE);
+
+        assertTrue(A.equals(B));
+        assertTrue(B.equals(C));
+        assertTrue(A.equals(C));
+    }
+
+    @Test
+    void testEquality_ZeroValue() {
+        assertTrue(
+            new Quantity<>(0.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(0.0, VolumeUnit.MILLILITRE))
+        );
+    }
+
+    @Test
+    void testEquality_NegativeVolume() {
+        assertTrue(
+            new Quantity<>(-1.0, VolumeUnit.LITRE)
+            .equals(new Quantity<>(-1000.0, VolumeUnit.MILLILITRE))
+        );
+    }
+
+    @Test
+    void testEquality_LargeVolumeValue() {
+        assertTrue(
+            new Quantity<>(1000000.0, VolumeUnit.MILLILITRE)
+            .equals(new Quantity<>(1000.0, VolumeUnit.LITRE))
+        );
+    }
+
 }
+
+

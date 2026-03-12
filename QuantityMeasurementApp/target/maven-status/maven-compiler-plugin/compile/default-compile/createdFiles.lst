@@ -1,4 +1,5 @@
 IMeasurable.class
+VolumeUnit.class
 LengthUnit.class
 WeightUnit.class
 QuantityMeasurementApp.class
