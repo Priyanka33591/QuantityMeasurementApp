@@ -51,6 +51,10 @@ public class QuantityController {
         }
     }
 
+    @GetMapping
+    public String checkStartUP(){
+        return "Everything is Okay!";
+    }
     // ✅ GET: History by operation
     @GetMapping("/history/operation/{operation}")
     public List<QuantityEntity> getByOperation(@PathVariable String operation) {
