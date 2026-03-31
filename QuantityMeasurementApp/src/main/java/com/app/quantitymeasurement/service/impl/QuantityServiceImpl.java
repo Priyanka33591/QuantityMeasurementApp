@@ -1,8 +1,6 @@
 package com.app.quantitymeasurement.service.impl;
 
-import com.app.quantitymeasurement.dto.QuantityDTO;
-import com.app.quantitymeasurement.dto.QuantityInputDTO;
-import com.app.quantitymeasurement.dto.ResponseDTO;
+import com.app.quantitymeasurement.dto.*;
 import com.app.quantitymeasurement.entity.QuantityEntity;
 import com.app.quantitymeasurement.repository.QuantityRepository;
 import com.app.quantitymeasurement.service.QuantityService;
@@ -16,7 +14,7 @@ public class QuantityServiceImpl implements QuantityService {
     @Autowired
     private QuantityRepository repo;
 
-    // 🔹 Helper method
+    // 🔹 UNIT HELPER
     private IMeasurable getUnit(String unit, String type) {
         return switch (type) {
             case "LengthUnit" -> LengthUnit.valueOf(unit);
@@ -31,32 +29,41 @@ public class QuantityServiceImpl implements QuantityService {
         return getUnit(unit, type).toBase(value);
     }
 
-    private QuantityDTO getThis(QuantityInputDTO input) {
-        return input.getThisQuantityDTO();
+    private InputDTO q1(QuantityInputDTO input) {
+        return input.getInput1();
     }
 
-    private QuantityDTO getThat(QuantityInputDTO input) {
-        return input.getThatQuantityDTO();
+    private InputDTO q2(QuantityInputDTO input) {
+        return input.getInput2();
     }
 
-    // 🔥 COMMON SAVE METHOD
-    private void saveSuccess(QuantityEntity e, QuantityDTO q1, QuantityDTO q2, String op, double result, String unit) {
+    private MetaDTO meta(QuantityInputDTO input) {
+        return input.getMeta();
+    }
+
+    private String outputUnit(MetaDTO meta, InputDTO q1) {
+        return (meta.getResultUnit() != null && !meta.getResultUnit().isEmpty())
+                ? meta.getResultUnit()
+                : q1.getUnit();
+    }
+
+    private double round(double val) {
+        return Math.round(val * 100.0) / 100.0;
+    }
+
+    private void save(QuantityEntity e, InputDTO q1, InputDTO q2,
+                      String op, double result, String unit, String type) {
+
         e.setValue1(q1.getValue());
         e.setUnit1(q1.getUnit());
-        e.setType(q1.getMeasurementType());
-        e.setValue2(q2.getValue());
-        e.setUnit2(q2.getUnit());
+        e.setValue2(q2 != null ? q2.getValue() : 0);
+        e.setUnit2(q2 != null ? q2.getUnit() : null);
+        e.setType(type);
         e.setOperation(op);
         e.setResult(result);
         e.setResultUnit(unit);
         e.setError(false);
-        repo.save(e);
-    }
 
-    private void saveError(QuantityEntity e, String op, Exception ex) {
-        e.setOperation(op);
-        e.setError(true);
-        e.setErrorMessage(ex.getMessage());
         repo.save(e);
     }
 
@@ -64,162 +71,131 @@ public class QuantityServiceImpl implements QuantityService {
     @Override
     public ResponseDTO add(QuantityInputDTO input) {
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
+        MetaDTO meta = meta(input);
 
-        try {
-            double base1 = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
-            double base2 = toBase(q2.getValue(), q2.getUnit(), q2.getMeasurementType());
-            double resultBase = base1 + base2;
-            IMeasurable unit = getUnit(q1.getUnit(), q1.getMeasurementType());
-            double result = unit.fromBase(resultBase);
-            result = Math.round(result * 100.0) / 100.0;
-            saveSuccess(e, q1, q2, "ADD", result, q1.getUnit());
-            return new ResponseDTO(result, q1.getUnit());
-        } catch (Exception ex) {
-            saveError(e, "ADD", ex);
-            throw ex;
-        }
+        double resultBase =
+                toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) +
+                        toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
+
+        String unit = outputUnit(meta, q1);
+
+        double result = getUnit(unit, meta.getMeasurementType()).fromBase(resultBase);
+
+        result = round(result);
+
+        save(new QuantityEntity(), q1, q2, "ADD", result, unit, meta.getMeasurementType());
+
+        return new ResponseDTO(result, unit);
     }
 
-    // ✅ SUBTRACT
     @Override
     public ResponseDTO subtract(QuantityInputDTO input) {
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
+        MetaDTO meta = meta(input);
 
-        try {
-            double base1 = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
-            double base2 = toBase(q2.getValue(), q2.getUnit(), q2.getMeasurementType());
+        double resultBase =
+                toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) -
+                        toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
 
-            double resultBase = base1 - base2;
+        String unit = outputUnit(meta, q1);
 
-            IMeasurable unit = getUnit(q1.getUnit(), q1.getMeasurementType());
-            double result = unit.fromBase(resultBase);
+        double result = getUnit(unit, meta.getMeasurementType()).fromBase(resultBase);
 
-            result = Math.round(result * 100.0) / 100.0;
+        result = round(result);
 
-            saveSuccess(e, q1, q2, "SUBTRACT", result, q1.getUnit());
+        save(new QuantityEntity(), q1, q2, "SUBTRACT", result, unit, meta.getMeasurementType());
 
-            return new ResponseDTO(result, q1.getUnit());
-
-        } catch (Exception ex) {
-            saveError(e, "SUBTRACT", ex);
-            throw ex;
-        }
+        return new ResponseDTO(result, unit);
     }
 
-    // ✅ MULTIPLY
+    //MULTIPLY
     @Override
     public ResponseDTO multiply(QuantityInputDTO input) {
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
 
-        try {
-            double base1 = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
-            double base2 = toBase(q2.getValue(), q2.getUnit(), q2.getMeasurementType());
-
-            double result = base1 * base2;
-
-            result = Math.round(result * 100.0) / 100.0;
-
-            saveSuccess(e, q1, q2, "MULTIPLY", result, q1.getUnit());
-
-            return new ResponseDTO(result, q1.getUnit());
-
-        } catch (Exception ex) {
-            saveError(e, "MULTIPLY", ex);
-            throw ex;
+        // units different
+        if (!q1.getUnit().equals(q2.getUnit())) {
+            throw new IllegalArgumentException("Units must be same for multiplication");
         }
+
+        double result = q1.getValue() * q2.getValue();
+
+        result = round(result);
+
+        // 👉 better: scalar or same unit (your choice)
+        return new ResponseDTO(result, q1.getUnit());
     }
 
-    // ✅ DIVIDE
+    //DIVIDE
     @Override
     public ResponseDTO divide(QuantityInputDTO input) {
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
 
-        if (!q1.getMeasurementType().equals(q2.getMeasurementType())) {
-            throw new IllegalArgumentException("Different measurement types cannot be multiplied");
+        if (q2.getValue() == 0) {
+            throw new ArithmeticException("Divide by zero");
         }
 
-        try {
-            if (q2.getValue() == 0) {
-                throw new ArithmeticException("Divide by zero");
-            }
-
-            double base1 = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
-            double base2 = toBase(q2.getValue(), q2.getUnit(), q2.getMeasurementType());
-
-            double result = base1 / base2;
-
-            result = Math.round(result * 100.0) / 100.0;
-
-            saveSuccess(e, q1, q2, "DIVIDE", result, q1.getUnit());
-
-            return new ResponseDTO(result, q1.getUnit());
-
-        } catch (Exception ex) {
-            saveError(e, "DIVIDE", ex);
-            throw ex;
+        // ❌ units different
+        if (!q1.getUnit().equals(q2.getUnit())) {
+            throw new IllegalArgumentException("Units must be same for division");
         }
-    }
 
-    // ✅ COMPARE
-    @Override
-    public ResponseDTO compare(QuantityInputDTO input) {
+        double result = q1.getValue() / q2.getValue();
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        result = round(result);
 
-        try {
-            double v1 = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
-            double v2 = toBase(q2.getValue(), q2.getUnit(), q2.getMeasurementType());
-
-            boolean isEqual = Math.abs(v1 - v2) < 0.0001;
-
-            saveSuccess(e, q1, q2, "COMPARE", isEqual ? 1 : 0, "BOOLEAN");
-
-            return new ResponseDTO(isEqual ? 1 : 0, isEqual ? "true" : "false");
-
-        } catch (Exception ex) {
-            saveError(e, "COMPARE", ex);
-            throw ex;
-        }
+        // 👉 division gives unitless value
+        return new ResponseDTO(result, "SCALAR");
     }
 
     // ✅ CONVERT
     @Override
     public ResponseDTO convert(QuantityInputDTO input) {
 
-        QuantityEntity e = new QuantityEntity();
-        QuantityDTO q1 = getThis(input);
-        QuantityDTO q2 = getThat(input);
+        InputDTO q1 = q1(input);
+        MetaDTO meta = meta(input);
 
-        try {
-            double base = toBase(q1.getValue(), q1.getUnit(), q1.getMeasurementType());
+        double base = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType());
 
-            IMeasurable target = getUnit(q2.getUnit(), q1.getMeasurementType());
+        String unit = meta.getResultUnit();
 
-            double result = target.fromBase(base);
-
-            result = Math.round(result * 100.0) / 100.0;
-
-            saveSuccess(e, q1, q2, "CONVERT", result, q2.getUnit());
-
-            return new ResponseDTO(result, q2.getUnit());
-
-        } catch (Exception ex) {
-            saveError(e, "CONVERT", ex);
-            throw ex;
+        if (unit == null || unit.isEmpty()) {
+            throw new IllegalArgumentException("resultUnit is required");
         }
+
+        double result = getUnit(unit, meta.getMeasurementType()).fromBase(base);
+
+        result = round(result);
+
+        save(new QuantityEntity(), q1, null, "CONVERT", result, unit, meta.getMeasurementType());
+
+        return new ResponseDTO(result, unit);
+    }
+
+    // ✅ COMPARE
+    @Override
+    public ResponseDTO compare(QuantityInputDTO input) {
+
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
+        MetaDTO meta = meta(input);
+
+        double v1 = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType());
+        double v2 = toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
+
+        boolean equal = Math.abs(v1 - v2) < 0.0001;
+
+        save(new QuantityEntity(), q1, q2, "COMPARE",
+                equal ? 1 : 0, "BOOLEAN", meta.getMeasurementType());
+
+        return new ResponseDTO(equal ? 1 : 0, equal ? "true" : "false");
     }
 }

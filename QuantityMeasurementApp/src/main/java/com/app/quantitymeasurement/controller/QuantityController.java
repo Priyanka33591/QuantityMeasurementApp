@@ -7,7 +7,6 @@ import com.app.quantitymeasurement.model.OperationType;
 import com.app.quantitymeasurement.repository.QuantityRepository;
 import com.app.quantitymeasurement.service.QuantityService;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,57 +24,49 @@ public class QuantityController {
 
     // ✅ MAIN API
     @PostMapping("/perform")
-    public ResponseDTO performOperation(@Valid @RequestBody QuantityInputDTO inputDTO) {
+    public ResponseDTO performOperation(@RequestBody QuantityInputDTO input) {
 
-        OperationType operation = inputDTO.getThisQuantityDTO().getOperationType();
+        OperationType operationType = input.getMeta().getOperationType();
 
-        if (operation == null) {
+        if (operationType == null) {
             throw new RuntimeException("OperationType is required");
         }
 
-        switch (operation) {
-            case ADD:
-                return service.add(inputDTO);
-            case SUBTRACT:
-                return service.subtract(inputDTO);
-            case MULTIPLY:
-                return service.multiply(inputDTO);
-            case DIVIDE:
-                return service.divide(inputDTO);
-            case COMPARE:
-                return service.compare(inputDTO);
-            case CONVERT:
-                return service.convert(inputDTO);
-            default:
-                throw new RuntimeException("Invalid Operation");
-        }
+        return switch (operationType) {
+            case ADD -> service.add(input);
+            case SUBTRACT -> service.subtract(input);
+            case MULTIPLY -> service.multiply(input);
+            case DIVIDE -> service.divide(input);
+            case COMPARE -> service.compare(input);
+            case CONVERT -> service.convert(input);
+            default -> throw new RuntimeException("Invalid operation");
+        };
     }
 
     @GetMapping
     public String checkStartUP(){
         return "Everything is Okay!";
     }
-    // ✅ GET: History by operation
+
     @GetMapping("/history/operation/{operation}")
     public List<QuantityEntity> getByOperation(@PathVariable String operation) {
         return repo.findByOperation(operation);
     }
 
-    // ✅ GET: History by type
     @GetMapping("/history/type/{type}")
     public List<QuantityEntity> getByType(@PathVariable String type) {
         return repo.findByType(type);
     }
 
-    // ✅ GET: Count by operation
     @GetMapping("/count/{operation}")
     public long countByOperation(@PathVariable String operation) {
         return repo.countByOperation(operation);
     }
 
-    // ✅ GET: Error history
     @GetMapping("/history/errored")
     public List<QuantityEntity> getErrors() {
         return repo.findByErrorTrue();
     }
 }
+
+
