@@ -2,38 +2,27 @@ package com.app.quantitymeasurement.service.impl;
 
 import com.app.quantitymeasurement.dto.*;
 import com.app.quantitymeasurement.entity.QuantityEntity;
-<<<<<<< HEAD
 import com.app.quantitymeasurement.entity.QuantityHistory;
 import com.app.quantitymeasurement.repository.HistoryRepository;
-=======
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
 import com.app.quantitymeasurement.repository.QuantityRepository;
 import com.app.quantitymeasurement.service.QuantityService;
 import com.app.quantitymeasurement.unit.*;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-=======
-import org.springframework.stereotype.Service;
-
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
 @Service
 public class QuantityServiceImpl implements QuantityService {
 
     @Autowired
     private QuantityRepository repo;
 
-<<<<<<< HEAD
     @Autowired
     private HistoryRepository historyRepository;
 
-=======
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
     // 🔹 UNIT HELPER
     private IMeasurable getUnit(String unit, String type) {
         return switch (type) {
@@ -87,7 +76,6 @@ public class QuantityServiceImpl implements QuantityService {
         repo.save(e);
     }
 
-<<<<<<< HEAD
     // 🔥 COMMON HISTORY METHOD
     private void saveHistory(QuantityInputDTO input, double result, String resultUnit) {
 
@@ -130,8 +118,6 @@ public class QuantityServiceImpl implements QuantityService {
         historyRepository.save(history);
     }
 
-=======
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
     // ✅ ADD
     @Override
     public ResponseDTO add(QuantityInputDTO input) {
@@ -152,18 +138,12 @@ public class QuantityServiceImpl implements QuantityService {
 
         save(new QuantityEntity(), q1, q2, "ADD", result, unit, meta.getMeasurementType());
 
-<<<<<<< HEAD
         saveHistory(input, result, unit);
 
         return new ResponseDTO(result, unit);
     }
 
     // ✅ SUBTRACT
-=======
-        return new ResponseDTO(result, unit);
-    }
-
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
     @Override
     public ResponseDTO subtract(QuantityInputDTO input) {
 
@@ -183,35 +163,23 @@ public class QuantityServiceImpl implements QuantityService {
 
         save(new QuantityEntity(), q1, q2, "SUBTRACT", result, unit, meta.getMeasurementType());
 
-<<<<<<< HEAD
         saveHistory(input, result, unit);
 
         return new ResponseDTO(result, unit);
     }
 
     // MULTIPLY
-=======
-        return new ResponseDTO(result, unit);
-    }
-
-    //MULTIPLY
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
     @Override
     public ResponseDTO multiply(QuantityInputDTO input) {
 
         InputDTO q1 = q1(input);
         InputDTO q2 = q2(input);
 
-<<<<<<< HEAD
-=======
-        // units different
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
         if (!q1.getUnit().equals(q2.getUnit())) {
             throw new IllegalArgumentException("Units must be same for multiplication");
         }
 
         double result = q1.getValue() * q2.getValue();
-<<<<<<< HEAD
         result = round(result);
 
          // 🔥 unit squared
@@ -244,39 +212,6 @@ public ResponseDTO divide(QuantityInputDTO input) {
     return new ResponseDTO(result, "SCALAR");
 }
 
-=======
-
-        result = round(result);
-
-        // 👉 better: scalar or same unit (your choice)
-        return new ResponseDTO(result, q1.getUnit());
-    }
-
-    //DIVIDE
-    @Override
-    public ResponseDTO divide(QuantityInputDTO input) {
-
-        InputDTO q1 = q1(input);
-        InputDTO q2 = q2(input);
-
-        if (q2.getValue() == 0) {
-            throw new ArithmeticException("Divide by zero");
-        }
-
-        // ❌ units different
-        if (!q1.getUnit().equals(q2.getUnit())) {
-            throw new IllegalArgumentException("Units must be same for division");
-        }
-
-        double result = q1.getValue() / q2.getValue();
-
-        result = round(result);
-
-        // 👉 division gives unitless value
-        return new ResponseDTO(result, "SCALAR");
-    }
-
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
     // ✅ CONVERT
     @Override
     public ResponseDTO convert(QuantityInputDTO input) {
@@ -293,19 +228,12 @@ public ResponseDTO divide(QuantityInputDTO input) {
         }
 
         double result = getUnit(unit, meta.getMeasurementType()).fromBase(base);
-<<<<<<< HEAD
-=======
-
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
         result = round(result);
 
         save(new QuantityEntity(), q1, null, "CONVERT", result, unit, meta.getMeasurementType());
 
-<<<<<<< HEAD
         saveHistory(input, result, unit);
 
-=======
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
         return new ResponseDTO(result, unit);
     }
 
@@ -325,11 +253,8 @@ public ResponseDTO divide(QuantityInputDTO input) {
         save(new QuantityEntity(), q1, q2, "COMPARE",
                 equal ? 1 : 0, "BOOLEAN", meta.getMeasurementType());
 
-<<<<<<< HEAD
         saveHistory(input, equal ? 1 : 0, "BOOLEAN");
 
-=======
->>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
         return new ResponseDTO(equal ? 1 : 0, equal ? "true" : "false");
     }
 }

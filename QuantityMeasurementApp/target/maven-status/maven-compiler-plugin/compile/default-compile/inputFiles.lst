@@ -1,14 +1,29 @@
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\unit\WeightUnit.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\dto\QuantityDTO.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\repository\QuantityRepository.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\entity\QuantityEntity.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\controller\QuantityController.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\dto\OperationRequest.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\service\impl\QuantityServiceImpl.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\dto\ResponseDTO.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\service\QuantityService.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\unit\TemperatureUnit.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\unit\VolumeUnit.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\QuantityMeasurementAppApplication.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\unit\IMeasurable.java
-C:\Users\priya\Downloads\quantity-measurement-app\src\main\java\com\app\quantitymeasurement\unit\LengthUnit.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\unit\TemperatureUnit.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\service\CustomUserDetailsService.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\dto\ResponseDTO.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\QuantityMeasurementAppApplication.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\oauth\OAuth2AuthenticationSuccessHandler.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\jwt\JwtUtil.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\unit\WeightUnit.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\service\QuantityService.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\unit\LengthUnit.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\repository\HistoryRepository.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\oauth\OAuth2LoginFrontendFailureHandler.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\unit\IMeasurable.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\controller\QuantityController.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\jwt\JwtFilter.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\repository\QuantityRepository.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\config\PasswordConfig.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\entity\QuantityHistory.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\repository\UserRepository.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\dto\InputDTO.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\entity\User.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\security\config\SecurityConfig.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\entity\QuantityEntity.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\service\impl\QuantityServiceImpl.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\dto\MetaDTO.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\auth\AuthController.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\unit\VolumeUnit.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\controller\OAuthSpaCallbackController.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\dto\QuantityInputDTO.java
+C:\Users\priya\Downloads\QMA full\quantity-measurement-app-backend\src\main\java\com\app\quantitymeasurement\model\OperationType.java
