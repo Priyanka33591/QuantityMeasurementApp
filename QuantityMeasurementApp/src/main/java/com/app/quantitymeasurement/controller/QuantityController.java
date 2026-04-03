@@ -2,6 +2,7 @@ package com.app.quantitymeasurement.controller;
 
 import com.app.quantitymeasurement.dto.QuantityInputDTO;
 import com.app.quantitymeasurement.dto.ResponseDTO;
+<<<<<<< HEAD
 import com.app.quantitymeasurement.entity.QuantityHistory;
 import com.app.quantitymeasurement.entity.User;
 import com.app.quantitymeasurement.model.OperationType;
@@ -13,6 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+=======
+import com.app.quantitymeasurement.entity.QuantityEntity;
+import com.app.quantitymeasurement.model.OperationType;
+import com.app.quantitymeasurement.repository.QuantityRepository;
+import com.app.quantitymeasurement.service.QuantityService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +30,7 @@ import java.util.List;
 @RequestMapping("/api/v1/quantities")
 public class QuantityController {
 
+<<<<<<< HEAD
 
     private final QuantityService service;
     @Autowired
@@ -40,6 +50,17 @@ public class QuantityController {
     // ✅ MAIN API
     @PostMapping("/perform")
     public ResponseEntity<ResponseDTO> performOperation(@RequestBody QuantityInputDTO input) {
+=======
+    @Autowired
+    private QuantityService service;
+
+    @Autowired
+    private QuantityRepository repo;
+
+    // ✅ MAIN API
+    @PostMapping("/perform")
+    public ResponseDTO performOperation(@RequestBody QuantityInputDTO input) {
+>>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
 
         OperationType operationType = input.getMeta().getOperationType();
 
@@ -47,13 +68,18 @@ public class QuantityController {
             throw new RuntimeException("OperationType is required");
         }
 
+<<<<<<< HEAD
         ResponseDTO response = switch (operationType) {
+=======
+        return switch (operationType) {
+>>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
             case ADD -> service.add(input);
             case SUBTRACT -> service.subtract(input);
             case MULTIPLY -> service.multiply(input);
             case DIVIDE -> service.divide(input);
             case COMPARE -> service.compare(input);
             case CONVERT -> service.convert(input);
+<<<<<<< HEAD
         };
 
         return ResponseEntity.ok(response);
@@ -124,3 +150,36 @@ public class QuantityController {
         return ResponseEntity.ok(history);
     }
 }
+=======
+            default -> throw new RuntimeException("Invalid operation");
+        };
+    }
+
+    @GetMapping
+    public String checkStartUP(){
+        return "Everything is Okay!";
+    }
+
+    @GetMapping("/history/operation/{operation}")
+    public List<QuantityEntity> getByOperation(@PathVariable String operation) {
+        return repo.findByOperation(operation);
+    }
+
+    @GetMapping("/history/type/{type}")
+    public List<QuantityEntity> getByType(@PathVariable String type) {
+        return repo.findByType(type);
+    }
+
+    @GetMapping("/count/{operation}")
+    public long countByOperation(@PathVariable String operation) {
+        return repo.countByOperation(operation);
+    }
+
+    @GetMapping("/history/errored")
+    public List<QuantityEntity> getErrors() {
+        return repo.findByErrorTrue();
+    }
+}
+
+
+>>>>>>> 2db7cb5e0b5c1e3c8cc5a4e898bf544d3740b135
