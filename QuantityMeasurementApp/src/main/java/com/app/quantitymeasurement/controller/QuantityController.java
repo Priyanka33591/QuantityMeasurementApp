@@ -41,6 +41,10 @@ public class QuantityController {
     @PostMapping("/perform")
     public ResponseEntity<ResponseDTO> performOperation(@RequestBody QuantityInputDTO input) {
 
+        if (input.getMeta() == null || input.getMeta().getOperationType() == null) {
+            throw new RuntimeException("OperationType is required");
+        }
+
         OperationType operationType = input.getMeta().getOperationType();
 
         if (operationType == null) {

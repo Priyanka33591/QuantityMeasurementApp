@@ -61,7 +61,7 @@ public class QuantityServiceImpl implements QuantityService {
     }
 
     private void save(QuantityEntity e, InputDTO q1, InputDTO q2,
-                      String op, double result, String unit, String type) {
+            String op, double result, String unit, String type) {
 
         e.setValue1(q1.getValue());
         e.setUnit1(q1.getUnit());
@@ -126,9 +126,8 @@ public class QuantityServiceImpl implements QuantityService {
         InputDTO q2 = q2(input);
         MetaDTO meta = meta(input);
 
-        double resultBase =
-                toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) +
-                        toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
+        double resultBase = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) +
+                toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
 
         String unit = outputUnit(meta, q1);
 
@@ -151,9 +150,8 @@ public class QuantityServiceImpl implements QuantityService {
         InputDTO q2 = q2(input);
         MetaDTO meta = meta(input);
 
-        double resultBase =
-                toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) -
-                        toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
+        double resultBase = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType()) -
+                toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
 
         String unit = outputUnit(meta, q1);
 
@@ -182,35 +180,39 @@ public class QuantityServiceImpl implements QuantityService {
         double result = q1.getValue() * q2.getValue();
         result = round(result);
 
-         // 🔥 unit squared
+        // 🔥 unit squared
         String unit = q1.getUnit() + "²";
 
-        saveHistory(input, result, q1.getUnit());
+        saveHistory(input, result, unit);
 
-        return new ResponseDTO(result, q1.getUnit());
+        return new ResponseDTO(result, unit);
     }
 
-// DIVIDE
-@Override
-public ResponseDTO divide(QuantityInputDTO input) {
+    // DIVIDE
+    @Override
+    public ResponseDTO divide(QuantityInputDTO input) {
 
-    InputDTO q1 = q1(input);
-    InputDTO q2 = q2(input);
-    MetaDTO meta = meta(input);
+        InputDTO q1 = q1(input);
+        InputDTO q2 = q2(input);
+        MetaDTO meta = meta(input);
 
-    double base1 = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType());
-    double base2 = toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
+        double base1 = toBase(q1.getValue(), q1.getUnit(), meta.getMeasurementType());
+        double base2 = toBase(q2.getValue(), q2.getUnit(), meta.getMeasurementType());
 
-    if (base2 == 0) {
-        throw new ArithmeticException("Divide by zero");
+        if (base2 == 0) {
+            throw new ArithmeticException("Divide by zero");
+        }
+
+        double result = base1 / base2;
+
+        result = round(result);
+
+        save(new QuantityEntity(), q1, q2, "DIVIDE", result, "SCALAR", meta.getMeasurementType());
+
+        saveHistory(input, result, "SCALAR");
+
+        return new ResponseDTO(result, "SCALAR");
     }
-
-    double result = base1 / base2;
-
-    result = round(result);
-
-    return new ResponseDTO(result, "SCALAR");
-}
 
     // ✅ CONVERT
     @Override

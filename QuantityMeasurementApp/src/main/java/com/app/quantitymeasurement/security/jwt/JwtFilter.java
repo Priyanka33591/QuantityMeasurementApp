@@ -32,7 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
         // ⭐⭐⭐ MOST IMPORTANT FIX (OAuth + auth endpoints skip)
         if (path.startsWith("/oauth2") ||
                 path.startsWith("/login/oauth2") ||
-                path.startsWith("/auth")) {
+                path.startsWith("/auth")||
+    path.startsWith("/api/v1/quantities/auth"))  {
             chain.doFilter(request, response);
             return;
         }
@@ -41,13 +42,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith("Bearer ")) {
 
-            String token = header.substring(7);
-            String username = jwtUtil.extractUsername(token);
+    String token = header.substring(7);
 
-            // ✅ avoid overriding existing authentication
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+    try {
+        String username = jwtUtil.extractUsername(token);
 
-                UserDetails user = userDetailsService.loadUserByUsername(username);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            UserDetails user = userDetailsService.loadUserByUsername(username);
+
+            if (jwtUtil.validateToken(token, user)) {
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
@@ -56,6 +60,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
+    } catch (Exception e) {
+        // ignore invalid token
+    }
+}
 
         chain.doFilter(request, response);
     }
