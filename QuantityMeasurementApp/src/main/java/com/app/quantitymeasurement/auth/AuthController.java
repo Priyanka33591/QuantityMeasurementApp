@@ -17,16 +17,18 @@ public class AuthController {
         this.authManager = authManager;
         this.jwtUtil = jwtUtil;
     }
-    @PostMapping("/login")
-    public String login(@RequestBody User user) {
-
+@PostMapping("/login")
+public String login(@RequestBody User user) {
+    try {
         authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword()
                 )
         );
-
         return jwtUtil.generateToken(user.getUsername());
+    } catch (BadCredentialsException e) {
+        throw new RuntimeException("Invalid username or password");
     }
+}
 }

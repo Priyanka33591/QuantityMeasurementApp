@@ -15,12 +15,17 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of(
+
+        // 🔥 IMPORTANT (use patterns instead of strict origins)
+        config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "https://quantity-measurement-app-frontend-blush.vercel.app"
         ));
+
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
